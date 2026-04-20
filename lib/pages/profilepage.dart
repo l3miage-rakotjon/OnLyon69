@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ok/models/user.dart';
+import 'package:onlyon69/models/user.dart';
 
 class ProfilePage extends StatelessWidget{
   final User user;
