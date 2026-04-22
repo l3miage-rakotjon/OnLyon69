@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_svg/flutter_svg.dart';
+import '../widgets/team_logo.dart'; // Import du nouveau widget
 
 class LastMatchesSection extends StatefulWidget {
   const LastMatchesSection({super.key});
@@ -37,16 +37,6 @@ class _LastMatchesSectionState extends State<LastMatchesSection> {
     }
   }
 
-  Widget _buildLogo(String url) {
-    if (url.isEmpty) return const Icon(Icons.shield, size: 40, color: Colors.grey);
-    if (url.endsWith('.svg')) {
-      return SvgPicture.network(url, height: 40, width: 40,
-          placeholderBuilder: (context) => const SizedBox(height: 40, width: 40, child: CircularProgressIndicator(strokeWidth: 2)));
-    }
-    return Image.network(url, height: 40, width: 40,
-        errorBuilder: (context, error, stackTrace) => const Icon(Icons.shield, size: 40, color: Colors.grey));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -55,7 +45,7 @@ class _LastMatchesSectionState extends State<LastMatchesSection> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text("Nos 5 derniers matchs :", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            child: Text("Derniers résultats :", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
           ),
         ),
         FutureBuilder<List<dynamic>>(
@@ -80,7 +70,10 @@ class _LastMatchesSectionState extends State<LastMatchesSection> {
                   final awayScore = match['score']['fullTime']['away'];
                   final String homeLogo = match['homeTeam']['crest'] ?? "";
                   final String awayLogo = match['awayTeam']['crest'] ?? "";
-                  final date = match['utcDate'].toString().substring(0, 10);
+
+                  // Correction de la date pour utiliser toLocal() ici aussi
+                  final localDate = DateTime.parse(match['utcDate']).toLocal();
+                  final date = "${localDate.day.toString().padLeft(2, '0')}/${localDate.month.toString().padLeft(2, '0')}/${localDate.year}";
 
                   return Card(
                     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -93,9 +86,25 @@ class _LastMatchesSectionState extends State<LastMatchesSection> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(child: Column(children: [_buildLogo(homeLogo), const SizedBox(height: 8), Text(homeTeam, textAlign: TextAlign.center, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold))])),
+                              Expanded(
+                                  child: Column(
+                                      children: [
+                                        TeamLogo(url: homeLogo),
+                                        const SizedBox(height: 8),
+                                        Text(homeTeam, textAlign: TextAlign.center, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold))
+                                      ]
+                                  )
+                              ),
                               Text("$homeScore - $awayScore", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.blue)),
-                              Expanded(child: Column(children: [_buildLogo(awayLogo), const SizedBox(height: 8), Text(awayTeam, textAlign: TextAlign.center, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold))])),
+                              Expanded(
+                                  child: Column(
+                                      children: [
+                                        TeamLogo(url: awayLogo),
+                                        const SizedBox(height: 8),
+                                        Text(awayTeam, textAlign: TextAlign.center, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold))
+                                      ]
+                                  )
+                              ),
                             ],
                           ),
                         ],

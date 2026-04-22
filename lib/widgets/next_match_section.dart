@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../widgets/team_logo.dart'; // Import du nouveau widget
 
 class NextMatchSection extends StatefulWidget {
   const NextMatchSection({super.key});
@@ -37,14 +38,16 @@ class _NextMatchSectionState extends State<NextMatchSection> {
     }
   }
 
-  Widget _buildLogo(String url) {
-    if (url.isEmpty) return const Icon(Icons.shield, size: 40, color: Colors.grey);
-    if (url.endsWith('.svg')) {
-      return SvgPicture.network(url, height: 40, width: 40,
-          placeholderBuilder: (context) => const SizedBox(height: 40, width: 40, child: CircularProgressIndicator(strokeWidth: 2)));
+  Future<void> _launchTicketUrl() async {
+    final Uri url = Uri.parse('https://billetterie.ol.fr/'); // Le lien vers la billetterie
+
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Impossible d'ouvrir le lien")),
+        );
+      }
     }
-    return Image.network(url, height: 40, width: 40,
-        errorBuilder: (context, error, stackTrace) => const Icon(Icons.shield, size: 40, color: Colors.grey));
   }
 
   @override
@@ -55,7 +58,7 @@ class _NextMatchSectionState extends State<NextMatchSection> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text("Notre prochain match :", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red)),
+            child: Text("Prochain match :", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black)),
           ),
         ),
         FutureBuilder<Map<String, dynamic>?>(
@@ -87,11 +90,46 @@ class _NextMatchSectionState extends State<NextMatchSection> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Column(children: [_buildLogo(homeLogo), const SizedBox(height: 8), Text(homeTeam, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))])),
+                          Expanded(
+                              child: Column(
+                                  children: [
+                                    TeamLogo(url: homeLogo),
+                                    const SizedBox(height: 8),
+                                    Text(homeTeam, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))
+                                  ]
+                              )
+                          ),
                           const Text("VS", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.grey)),
-                          Expanded(child: Column(children: [_buildLogo(awayLogo), const SizedBox(height: 8), Text(awayTeam, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))])),
+                          Expanded(
+                              child: Column(
+                                  children: [
+                                    TeamLogo(url: awayLogo),
+                                    const SizedBox(height: 8),
+                                    Text(awayTeam, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))
+                                  ]
+                              )
+                          ),
                         ],
                       ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _launchTicketUrl,
+                      icon: const Icon(Icons.confirmation_number, color: Colors.white),
+                      label: const Text(
+                          "Prendre sa place",
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade700, // Rouge OL
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
                     ],
                   ),
                 ),
