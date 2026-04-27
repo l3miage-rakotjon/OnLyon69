@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/next_match_section.dart';
 import '../widgets/last_matches_section.dart';
 import '../pages/leaderboard.dart';
+import '../pages/squad_page.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -16,6 +17,15 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
 
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const SquadPage()),
+              );
+            },
+            icon: const Icon(Icons.group),
+            tooltip: "Effectif",
+          ),
           IconButton(onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const LeaderboardPage()),
@@ -48,12 +58,10 @@ class _HomePageState extends State<HomePage> {
                   child: Image.asset("assets/images/icon.png", height: 100)),
             ),
 
-            // 1. Le composant du prochain match
             const NextMatchSection(),
 
             const Divider(height: 40),
 
-            // 2. Le composant des derniers résultats
             const LastMatchesSection(),
 
             const SizedBox(height: 20),

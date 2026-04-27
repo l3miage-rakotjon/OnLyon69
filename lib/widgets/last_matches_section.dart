@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../widgets/team_logo.dart'; // Import du nouveau widget
+import '../widgets/team_logo.dart';
 
 class LastMatchesSection extends StatefulWidget {
   const LastMatchesSection({super.key});
