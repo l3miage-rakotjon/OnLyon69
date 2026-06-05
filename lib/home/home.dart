@@ -3,6 +3,7 @@ import '../widgets/next_match_section.dart';
 import '../widgets/last_matches_section.dart';
 import '../pages/leaderboard.dart';
 import '../pages/squad_page.dart';
+import '../pages/quizz_page.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -31,6 +32,10 @@ class _HomePageState extends State<HomePage> {
               MaterialPageRoute(builder: (context) => const LeaderboardPage()),
             );
           }, icon: const Icon(Icons.leaderboard)),
+          IconButton(onPressed: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const QuizPage()),);
+          },
+          icon: const Icon(Icons.quiz),)
         ],
       ),
         body: Container(

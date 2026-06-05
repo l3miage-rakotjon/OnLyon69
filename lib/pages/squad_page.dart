@@ -91,7 +91,17 @@ class _SquadPageState extends State<SquadPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text("Erreur: ${snapshot.error}", style: const TextStyle(color: Colors.red)));
+            if (snapshot.error.toString().contains("403")) {
+              return const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  "Les informations ne sont pas disponibles pour le moment (Intersaison).",
+                  style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }
+            return Text("Erreur: ${snapshot.error}", style: const TextStyle(color: Colors.red));
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             final squad = snapshot.data!;
 
@@ -110,7 +120,6 @@ class _SquadPageState extends State<SquadPage> {
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   child: ListTile(
-                    // --- NOUVEAU : Le onTap pour gérer le clic ---
                     onTap: () {
                       // On récupère l'ID du joueur depuis l'API
                       final int playerId = player['id'];
@@ -122,7 +131,7 @@ class _SquadPageState extends State<SquadPage> {
                         ),
                       );
                     },
-                    // ----------------------------------------------
+
                     leading: CircleAvatar(
                       backgroundColor: Colors.red.shade50,
                       foregroundColor: Colors.red.shade700,

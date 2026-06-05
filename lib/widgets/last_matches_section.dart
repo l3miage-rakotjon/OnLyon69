@@ -54,6 +54,16 @@ class _LastMatchesSectionState extends State<LastMatchesSection> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Padding(padding: EdgeInsets.all(20.0), child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
+              if (snapshot.error.toString().contains("403")) {
+                return const Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text(
+                    "Les informations ne sont pas disponibles pour le moment (Intersaison).",
+                    style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
               return Text("Erreur: ${snapshot.error}", style: const TextStyle(color: Colors.red));
             } else if (snapshot.hasData) {
               final matches = snapshot.data!;

@@ -33,7 +33,8 @@ class _NextMatchSectionState extends State<NextMatchSection> {
         return data['matches'][0];
       }
       return null;
-    } else {
+    }
+    else{
       throw Exception("Erreur API : ${response.statusCode}");
     }
   }
@@ -67,6 +68,16 @@ class _NextMatchSectionState extends State<NextMatchSection> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
+              if (snapshot.error.toString().contains("403")) {
+                return const Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text(
+                    "Les informations ne sont pas disponibles pour le moment (Intersaison).",
+                    style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
               return Text("Erreur: ${snapshot.error}", style: const TextStyle(color: Colors.red));
             } else if (snapshot.hasData && snapshot.data != null) {
               final match = snapshot.data!;
