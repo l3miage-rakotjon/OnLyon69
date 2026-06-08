@@ -5,8 +5,11 @@ class QuestionWidget extends StatelessWidget {
   final List<String> options;
   final int currentIndex;
   final int totalQuestions;
-
   final Function(int) onAnswerSelected;
+
+  final bool isAnswered;
+  final int? selectedAnswerIndex;
+  final int correctAnswerIndex;
 
   const QuestionWidget({
     super.key,
@@ -15,7 +18,34 @@ class QuestionWidget extends StatelessWidget {
     required this.currentIndex,
     required this.totalQuestions,
     required this.onAnswerSelected,
+    // --- REQUIS ICI AUSSI ---
+    required this.isAnswered,
+    required this.selectedAnswerIndex,
+    required this.correctAnswerIndex,
   });
+
+  Color getButtonBackgroundColor(int optionIndex) {
+    if (!isAnswered) {
+      return Colors.red.shade50;
+    }
+    if (optionIndex == correctAnswerIndex) {
+      return Colors.green;
+    }
+    if (optionIndex == selectedAnswerIndex) {
+      return Colors.red;
+    }
+    return Colors.grey.shade300;
+  }
+
+  Color getButtonTextColor(int optionIndex) {
+    if (!isAnswered) {
+      return Colors.red.shade900;
+    }
+    if (optionIndex == correctAnswerIndex || optionIndex == selectedAnswerIndex) {
+      return Colors.white;
+    }
+    return Colors.grey.shade600;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +53,6 @@ class QuestionWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-
         Text(
           "Question ${currentIndex + 1}/$totalQuestions",
           style: const TextStyle(fontSize: 18, color: Colors.grey, fontWeight: FontWeight.bold),
@@ -44,13 +73,12 @@ class QuestionWidget extends StatelessWidget {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                backgroundColor: Colors.red.shade50,
-                foregroundColor: Colors.red.shade900,
+                backgroundColor: getButtonBackgroundColor(index), // Couleur dynamique
+                foregroundColor: getButtonTextColor(index),       // Texte dynamique
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-
               onPressed: () => onAnswerSelected(index),
               child: Text(
                 options[index],
