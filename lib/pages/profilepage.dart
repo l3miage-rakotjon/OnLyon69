@@ -25,6 +25,5 @@ class ProfilePage extends StatelessWidget{
         icon: const Icon(Icons.person)
     )
     ]),);
-    //Placeholder();
   }
 }

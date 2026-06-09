@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../services/translation_service.dart';
+
+
 class PlayerDetailsPage extends StatefulWidget {
   final int playerId;
 
@@ -13,6 +16,7 @@ class PlayerDetailsPage extends StatefulWidget {
 
 class _PlayerDetailsPageState extends State<PlayerDetailsPage> {
   final String apiToken = "c7655fc211a544a5ac9234eeb1cc06b6";
+  final TranslationService _translationService = TranslationService();
   late Future<Map<String, dynamic>> futurePlayer;
 
   @override
@@ -32,25 +36,6 @@ class _PlayerDetailsPageState extends State<PlayerDetailsPage> {
     }
   }
 
-  String translatePosition(String? position) {
-    switch (position) {
-      case "Goalkeeper": return "Gardien";
-      case "Defence": return "Défenseur";
-      case "Midfield": return "Milieu";
-      case "Offence": return "Attaquant";
-      case "Centre-Forward": return "Avant-centre";
-      case "Left Winger": return "Ailier Gauche";
-      case "Right Winger": return "Ailier Droit";
-      case "Central Midfield": return "Milieu Central";
-      case "Defensive Midfield": return "Milieu Défensif";
-      case "Attacking Midfield": return "Milieu Offensif";
-      case "Centre-Back": return "Défenseur Central";
-      case "Left-Back": return "Latéral Gauche";
-      case "Right-Back": return "Latéral Droit";
-      default: return position ?? "Staff technique";
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
@@ -67,7 +52,7 @@ class _PlayerDetailsPageState extends State<PlayerDetailsPage> {
           final String firstName = player['firstName'] ?? "";
           final String lastName = player['lastName'] ?? "";
           final String nationality = player['nationality'] ?? "Inconnue";
-          final String position = translatePosition(player['position'] ?? player['section']);
+          final String position = _translationService.translatePosition(player['position'] ?? player['section']);
           final String dob = player['dateOfBirth'] ?? "Non renseignée";
           final int? shirtNumber = player['shirtNumber'];
           final contract = player['currentTeam']?['contract'];

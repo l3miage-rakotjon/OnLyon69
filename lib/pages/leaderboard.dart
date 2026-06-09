@@ -29,8 +29,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      // L'API renvoie plusieurs types de classements Général, Domicile et Extérieur
-      // index[0] est le classement total
+      // L'API nous renvoie plusieurs types de classements Général, Domicile et Extérieur
+      // index[0] est le classement total ds la doc
       if (data['standings'] != null && data['standings'].isNotEmpty) {
         return data['standings'][0]['table'];
       }
@@ -98,7 +98,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                         child: Row(
                           children: [
-                            // 1. Position
                             SizedBox(
                                 width: 30,
                                 child: Text(
@@ -110,7 +109,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 )
                             ),
 
-                            // 2. Logo et Nom
+                            // On gere le logo et le nom
                             Expanded(
                               child: Row(
                                 children: [
@@ -130,13 +129,13 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                               ),
                             ),
 
-                            // 3. match joués
+                            // les matchs joués
                             SizedBox(
                                 width: 30,
                                 child: Text(playedGames.toString(), textAlign: TextAlign.center)
                             ),
 
-                            // 4. différence de buts
+                            // Diff de but
                             SizedBox(
                                 width: 40,
                                 child: Text(
@@ -146,7 +145,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 )
                             ),
 
-                            // 5. point
+                            // Nb de points
                             SizedBox(
                                 width: 40,
                                 child: Text(

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../pages/player_details_page.dart';
+import '../services/translation_service.dart';
+
 
 class SquadPage extends StatefulWidget {
   const SquadPage({super.key});
@@ -13,6 +15,7 @@ class SquadPage extends StatefulWidget {
 class _SquadPageState extends State<SquadPage> {
   final String apiToken = "c7655fc211a544a5ac9234eeb1cc06b6";
   final String teamId = "523";
+  final TranslationService _translationService = TranslationService();
 
   late Future<List<dynamic>> futureSquad;
 
@@ -34,46 +37,6 @@ class _SquadPageState extends State<SquadPage> {
       return [];
     } else {
       throw Exception("Erreur API : ${response.statusCode}");
-    }
-  }
-
-  // Traduction fr
-  String translatePosition(String? position) {
-    switch (position) {
-      case "Goalkeeper": return "Gardien";
-      case "Defence": return "Défenseur";
-      case "Midfield": return "Milieu";
-      case "Offence": return "Attaquant";
-      case "Defensive Midfield": return "Milieu Défensif";
-      case "Attacking Midfield": return "Milieu Offensif";
-      case "Right-Back": return "Latéral Droit";
-      case "Left-Back": return "Latéral Gauche";
-      case "Centre-Back": return "Défenseur Central";
-      case "Central Midfield": return "Milieu";
-      case "Left Winger": return "Ailier Gauche";
-      case "Right Winger": return "Ailier Droit";
-      case "Centre-Forward": return "Attaquant de Pointe";
-      default: return position ?? "Staff technique";
-    }
-  }
-
-  // icone suivant les postes
-  IconData getPositionIcon(String? position) {
-    switch (position) {
-      case "Goalkeeper": return Icons.back_hand;
-      case "Defence": return Icons.shield;
-      case "Midfield": return Icons.directions_run;
-      case "Offence": return Icons.sports_soccer;
-      case "Defensive Midfield": return Icons.directions_run;
-      case "Attacking Midfield": return Icons.auto_fix_high;
-      case "Right-Back": return Icons.shield;
-      case "Left-Back": return Icons.shield;
-      case "Centre-Back": return Icons.shield;
-      case "Central Midfield": return Icons.auto_fix_high;
-      case "Left Winger": return Icons.bolt;
-      case "Right Winger": return Icons.bolt;
-      case "Centre-Forward": return Icons.sports_soccer;
-      default: return Icons.person;
     }
   }
 
@@ -113,7 +76,6 @@ class _SquadPageState extends State<SquadPage> {
                 final String position = player['position'] ?? "";
                 final String nationality = player['nationality'] ?? "Inconnue";
 
-                // recupere date de naissance quand renseignée
                 final String dob = player['dateOfBirth'] ?? "";
                 final String birthYear = dob.isNotEmpty && dob.length >= 4 ? dob.substring(0, 4) : "";
 
@@ -121,24 +83,21 @@ class _SquadPageState extends State<SquadPage> {
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                   child: ListTile(
                     onTap: () {
-                      // On récupère l'ID du joueur depuis l'API
                       final int playerId = player['id'];
 
-                      // On navigue vers la nouvelle page en lui passant l'ID
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => PlayerDetailsPage(playerId: playerId),
                         ),
                       );
                     },
-
                     leading: CircleAvatar(
                       backgroundColor: Colors.red.shade50,
                       foregroundColor: Colors.red.shade700,
-                      child: Icon(getPositionIcon(player['position'])),
+                      child: Icon(_translationService.getPositionIcon(player['position'])),
                     ),
                     title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text("${translatePosition(position)} • $nationality"),
+                    subtitle: Text("${_translationService.translatePosition(position)} • $nationality"),
                     trailing: birthYear.isNotEmpty
                         ? Text("Né en $birthYear", style: const TextStyle(color: Colors.grey, fontSize: 12))
                         : null,

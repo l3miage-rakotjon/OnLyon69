@@ -18,7 +18,6 @@ class QuestionWidget extends StatelessWidget {
     required this.currentIndex,
     required this.totalQuestions,
     required this.onAnswerSelected,
-    // --- REQUIS ICI AUSSI ---
     required this.isAnswered,
     required this.selectedAnswerIndex,
     required this.correctAnswerIndex,
@@ -73,8 +72,8 @@ class QuestionWidget extends StatelessWidget {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                backgroundColor: getButtonBackgroundColor(index), // Couleur dynamique
-                foregroundColor: getButtonTextColor(index),       // Texte dynamique
+                backgroundColor: getButtonBackgroundColor(index),
+                foregroundColor: getButtonTextColor(index),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
